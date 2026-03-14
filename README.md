@@ -90,7 +90,7 @@ source venv/bin/activate
 ## 3️⃣ Install Backend Dependencies
 
 ```
-pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic transformers torch
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic transformers torch python-multipart
 ```
 
 ---
@@ -245,6 +245,14 @@ GovConnect will be expanded into a full AI-powered decision intelligence platfor
 # 👨‍💻 Contributors
 
 1. Dheeraj Soni
-2. Suryansh Chandel(Leader)
-3. Harsh Choudhary
-4. Agrim Gupta
+   divine.throne0024@gmail.com
+   
+3. Suryansh Chandel(Leader)
+   suryanshwork3456@gmail.com
+   
+4. Harsh Choudhary
+   7217harshchoudhary@gmail.com
+   
+5. Agrim Gupta
+   agrim.20250002@mnnit.ac.in
+   
