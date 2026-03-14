@@ -24,20 +24,30 @@ export default function Transparency() {
   const { issues, userSettings } = useApp();
 
   const totalIssues = issues.length;
-  const resolvedIssues = issues.filter(i => i.status === 'RESOLVED').length;
-  const pendingIssues = issues.filter(i => i.status === 'PENDING').length;
-  const dispatchedIssues = issues.filter(i => i.status === 'DISPATCHED').length;
 
-  const typeData = Array.from(new Set(issues.map(i => i.type))).map(type => ({
-    name: type,
-    value: issues.filter(i => i.type === type).length
-  }));
+// since backend currently doesn't store status yet
+const pendingIssues = issues.length;
+const resolvedIssues = 0;
+const dispatchedIssues = 0;
 
-  const statusData = [
-    { name: 'Pending', value: pendingIssues, color: '#f59e0b' },
-    { name: 'Dispatched', value: dispatchedIssues, color: '#3b82f6' },
-    { name: 'Resolved', value: resolvedIssues, color: '#10b981' },
-  ];
+// build category data safely
+const typeMap: Record<string, number> = {};
+
+issues.forEach((issue) => {
+  const type = issue.type || "General";
+  typeMap[type] = (typeMap[type] || 0) + 1;
+});
+
+const typeData = Object.entries(typeMap).map(([name, value]) => ({
+  name,
+  value
+}));
+
+ const statusData = [
+  { name: "Pending", value: pendingIssues, color: "#f59e0b" },
+  { name: "Dispatched", value: dispatchedIssues, color: "#3b82f6" },
+  { name: "Resolved", value: resolvedIssues, color: "#10b981" }
+].filter(s => s.value >= 0);
 
   const timelineData = [
     { name: 'Jan', issues: 12, resolved: 8 },
@@ -87,7 +97,7 @@ export default function Transparency() {
           <StatCard 
             icon={<TrendingUp className="text-purple-500" />} 
             label="Resolution Rate" 
-            value={`${Math.round((resolvedIssues / totalIssues) * 100 || 0)}%`} 
+            value={`${totalIssues ? Math.round((resolvedIssues / totalIssues) * 100) : 0}%`}
             trend="+3%" 
           />
         </div>

@@ -81,11 +81,13 @@ export default function Layout({ children, activeTab, onTabChange, showTabs = tr
                 className={cn("px-4 py-2 space-y-2 cursor-pointer group rounded-lg transition-colors", userSettings.darkMode ? "hover:bg-slate-800/50" : "hover:bg-slate-100")}
               >
                 <div className="flex justify-between items-center">
-                  <span className={cn("text-[11px] font-medium truncate max-w-[120px]", userSettings.darkMode ? "text-slate-300" : "text-slate-700")}>{issue.description.split('.')[0]}</span>
-                  <span className="text-[10px] font-bold text-slate-500">{issue.urgency}%</span>
+                  <span className={cn("text-[11px] font-medium truncate max-w-[120px]", userSettings.darkMode ? "text-slate-300" : "text-slate-700")}>
+                  {(issue.description || "").split('.')[0]}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-500">{issue.urgency || 0}%</span>
                 </div>
                 <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-600 rounded-full transition-all duration-500" style={{ width: `${issue.urgency}%` }} />
+                  <div className="h-full bg-blue-600 rounded-full transition-all duration-500" style={{ width: `${issue.urgency || 0}%` }} />
                 </div>
               </div>
             ))}

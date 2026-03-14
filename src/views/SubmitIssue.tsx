@@ -22,28 +22,40 @@ export default function SubmitIssue() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!description) return;
-    setIsSubmitting(true);
-    try {
-      await fetch('/api/issues', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          description,
-          type: 'Infrastructure',
-          location_name: 'Downtown District',
-          lat: 37.7749 + (Math.random() - 0.5) * 0.01,
-          lng: -122.4194 + (Math.random() - 0.5) * 0.01
-        })
-      });
-      await refreshIssues();
-      navigate('/');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
+  if (!description) return;
+
+  setIsSubmitting(true);
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/issues", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+      description,
+      location_name: "Downtown District",
+     lat: 37.7749 + (Math.random() - 0.5) * 0.01,
+    lng: -122.4194 + (Math.random() - 0.5) * 0.01
+})
+    });
+
+    const data = await response.json();
+    console.log("API RESPONSE:", data);
+
+    if (!response.ok) {
+      throw new Error("API request failed");
     }
-  };
+
+    await refreshIssues();
+    navigate("/");
+
+  } catch (err) {
+    console.error("SUBMIT ERROR:", err);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#0a0c12] text-slate-200 flex flex-col">

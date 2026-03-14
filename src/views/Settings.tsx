@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useApp } from '../AppContext';
 import Layout from '../components/Layout';
 import { cn } from '../lib/utils';
-import { User, Bell, Shield, Moon, Sun, Save, Trash2, LogOut, ChevronRight } from 'lucide-react';
+import { User, Bell, Shield, Save, Trash2, LogOut, ChevronRight } from 'lucide-react';
 
 export default function Settings() {
   const { userSettings, updateUserSettings } = useApp();
   const [formData, setFormData] = useState(userSettings);
   const [isSaving, setIsSaving] = useState(false);
+
+  // CHANGE: State to track which sidebar button is blue
+  const [activeSection, setActiveSection] = useState('profile');
+
+  // CHANGE: Refs (anchors) to identify sections for scrolling
+  const profileRef = useRef<HTMLDivElement>(null);
+  const notifyRef = useRef<HTMLDivElement>(null);
+  const securityRef = useRef<HTMLDivElement>(null);
+
+  // CHANGE: Function to handle clicking sidebar buttons
+  const scrollToSection = (section: string, ref: React.RefObject<HTMLDivElement>) => {
+    setActiveSection(section); // Moves the blue color
+    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); // Scrolls the page
+  };
 
   const handleSave = () => {
     setIsSaving(true);
@@ -40,17 +54,31 @@ export default function Settings() {
 
         <div className="grid grid-cols-3 gap-8">
           {/* Sidebar Navigation */}
-          <div className="space-y-2">
-            <SettingsNavButton icon={<User size={18} />} label="Profile" active />
-            <SettingsNavButton icon={<Bell size={18} />} label="Notifications" />
-            <SettingsNavButton icon={<Shield size={18} />} label="Security" />
-            <SettingsNavButton icon={<Moon size={18} />} label="Appearance" />
+          <div className="space-y-2 sticky top-8 h-fit">
+            <SettingsNavButton 
+              icon={<User size={18} />} 
+              label="Profile" 
+              active={activeSection === 'profile'} 
+              onClick={() => scrollToSection('profile', profileRef)}
+            />
+            <SettingsNavButton 
+              icon={<Bell size={18} />} 
+              label="Notifications" 
+              active={activeSection === 'notifications'} 
+              onClick={() => scrollToSection('notifications', notifyRef)}
+            />
+            <SettingsNavButton 
+              icon={<Shield size={18} />} 
+              label="Security" 
+              active={activeSection === 'security'} 
+              onClick={() => scrollToSection('security', securityRef)}
+            />
           </div>
 
           {/* Main Content */}
           <div className="col-span-2 space-y-8">
             {/* Profile Section */}
-            <section className={cn("glass-card p-8 space-y-6", !userSettings.darkMode && "bg-white border-slate-200 shadow-sm")}>
+            <section ref={profileRef} className={cn("glass-card p-8 space-y-6", !userSettings.darkMode && "bg-white border-slate-200 shadow-sm")}>
               <div className="flex items-center gap-4">
                 <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", userSettings.darkMode ? "bg-blue-600/10 text-blue-500" : "bg-blue-50 text-blue-600")}>
                   <User size={24} />
@@ -84,7 +112,7 @@ export default function Settings() {
             </section>
 
             {/* Notifications Section */}
-            <section className={cn("glass-card p-8 space-y-6", !userSettings.darkMode && "bg-white border-slate-200 shadow-sm")}>
+            <section ref={notifyRef} className={cn("glass-card p-8 space-y-6", !userSettings.darkMode && "bg-white border-slate-200 shadow-sm")}>
               <div className="flex items-center gap-4">
                 <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", userSettings.darkMode ? "bg-amber-500/10 text-amber-500" : "bg-amber-50 text-amber-600")}>
                   <Bell size={24} />
@@ -102,46 +130,25 @@ export default function Settings() {
                   enabled={formData.notifications}
                   onChange={(val) => setFormData({ ...formData, notifications: val })}
                 />
+                {/* CHANGE: Push Notifications is now functional */}
                 <Toggle 
                   label="Push Notifications" 
                   description="Real-time alerts on your mobile device." 
-                  enabled={true}
-                  onChange={() => {}}
+                  enabled={formData.pushNotifications ?? true}
+                  onChange={(val) => setFormData({ ...formData, pushNotifications: val })}
                 />
               </div>
             </section>
 
-            {/* Appearance Section */}
-            <section className={cn("glass-card p-8 space-y-6", !userSettings.darkMode && "bg-white border-slate-200 shadow-sm")}>
-              <div className="flex items-center gap-4">
-                <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", userSettings.darkMode ? "bg-purple-500/10 text-purple-500" : "bg-purple-50 text-purple-600")}>
-                  {formData.darkMode ? <Moon size={24} /> : <Sun size={24} />}
-                </div>
-                <div>
-                  <h3 className={cn("font-bold text-lg", !userSettings.darkMode && "text-slate-900")}>Appearance</h3>
-                  <p className="text-xs text-slate-500">Customize the look and feel of the application.</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <Toggle 
-                  label="Dark Mode" 
-                  description="Use a dark theme for better visibility at night." 
-                  enabled={formData.darkMode}
-                  onChange={(val) => setFormData({ ...formData, darkMode: val })}
-                />
-              </div>
-            </section>
-
-            {/* Danger Zone */}
-            <section className={cn("glass-card p-8 space-y-6 border-red-500/20", !userSettings.darkMode && "bg-white shadow-sm")}>
+            {/* Security Section (Danger Zone) */}
+            <section ref={securityRef} className={cn("glass-card p-8 space-y-6 border-red-500/20", !userSettings.darkMode && "bg-white shadow-sm")}>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center">
-                  <Trash2 size={24} />
+                  <Shield size={24} />
                 </div>
                 <div>
-                  <h3 className={cn("font-bold text-lg", !userSettings.darkMode && "text-slate-900")}>Danger Zone</h3>
-                  <p className="text-xs text-slate-500">Irreversible actions for your account.</p>
+                  <h3 className={cn("font-bold text-lg", !userSettings.darkMode && "text-slate-900")}>Security & Access</h3>
+                  <p className="text-xs text-slate-500">Manage your password and account security.</p>
                 </div>
               </div>
 
@@ -161,15 +168,19 @@ export default function Settings() {
   );
 }
 
-function SettingsNavButton({ icon, label, active = false }: { icon: React.ReactNode, label: string, active?: boolean }) {
+// Sidebar Button Component
+function SettingsNavButton({ icon, label, active = false, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) {
   const { userSettings } = useApp();
   return (
-    <button className={cn(
-      "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all group",
-      active 
-        ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
-        : cn("text-slate-400 hover:text-slate-200", userSettings.darkMode ? "hover:bg-slate-800/50" : "hover:bg-slate-100 text-slate-500 hover:text-slate-900")
-    )}>
+    <button 
+      onClick={onClick}
+      className={cn(
+        "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all group",
+        active 
+          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+          : cn("text-slate-400 hover:text-slate-200", userSettings.darkMode ? "hover:bg-slate-800/50" : "hover:bg-slate-100 text-slate-500 hover:text-slate-900")
+      )}
+    >
       <div className="flex items-center gap-3">
         {icon}
         {label}
@@ -179,6 +190,7 @@ function SettingsNavButton({ icon, label, active = false }: { icon: React.ReactN
   );
 }
 
+// Toggle Switch Component
 function Toggle({ label, description, enabled, onChange }: { label: string, description: string, enabled: boolean, onChange: (val: boolean) => void }) {
   const { userSettings } = useApp();
   return (

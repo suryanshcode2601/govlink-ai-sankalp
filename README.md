@@ -18,3 +18,16 @@ View your app in AI Studio: https://ai.studio/apps/de66c3f4-3fcb-4616-8f36-7b5d7
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+
+By the get we are sending information only through url
+through get we are sending the information through url only 
+Now by using post we get the output in base model
+
+
+Summary of the Flow-Setting.tsx
+User opens page: Data is fetched from useApp.
+
+User edits text: formData is updated locally.
+
+User clicks "Save": A spinner appears, a delay occurs, and then updateUserSettings saves the data globally.

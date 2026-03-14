@@ -35,8 +35,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const refreshIssues = async () => {
     try {
       const [issuesRes, timelineRes] = await Promise.all([
-        fetch('/api/issues'),
-        fetch('/api/timeline')
+        fetch('http://127.0.0.1:8000/api/issues'),
+        fetch('http://127.0.0.1:8000/api/timeline')
       ]);
       const [issuesData, timelineData] = await Promise.all([
         issuesRes.json(),

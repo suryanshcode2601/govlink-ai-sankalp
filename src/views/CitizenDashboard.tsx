@@ -23,10 +23,10 @@ export default function CitizenDashboard() {
           <>
             {/* Hero Section */}
             <div className="relative bg-blue-600 rounded-3xl p-12 overflow-hidden flex justify-between items-center">
-               <div className="relative z-10 max-w-xl space-y-6">
-                  <h2 className="text-6xl font-bold tracking-tight leading-[0.9]">Improve your city with AI</h2>
+              <div className="relative z-10 max-w-xl space-y-6">
+                  <h2 className="text-5xl font-bold tracking-tight leading-[0.9]">Improve your city with AI</h2>
                   <p className="text-blue-100 text-lg leading-relaxed">
-                    Quickly report local issues like potholes, outages, or safety concerns. Our AI routes your request directly to the right department.
+                    See a problem? Report it. Our AI handles the routing so the right department can get straight to work
                   </p>
                   <div className="flex gap-4">
                     <Link to="/submit" className="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-50 transition-colors">
@@ -43,7 +43,7 @@ export default function CitizenDashboard() {
                       <div className="w-16 h-16 border border-blue-400/30" />
                     </div>
                   </div>
-               </div>
+                </div>
             </div>
 
             {/* Community Issues */}
@@ -77,7 +77,9 @@ export default function CitizenDashboard() {
                     </div>
 
                     <div>
-                      <h4 className={cn("font-bold text-lg", !userSettings.darkMode && "text-slate-900")}>{issue.description.split('.')[0]}</h4>
+                      <h4 className={cn("font-bold text-lg", !userSettings.darkMode && "text-slate-900")}>
+                          {(issue.description || "").split('.')[0]}
+                      </h4>
                       <div className="flex items-center gap-2 text-slate-500 text-xs mt-1">
                         <MapPin size={14} />
                         {issue.location_name}
@@ -130,7 +132,9 @@ export default function CitizenDashboard() {
                       <FileText className="text-slate-700" />
                     </div>
                     <div>
-                      <h4 className={cn("font-bold text-lg", !userSettings.darkMode && "text-slate-900")}>{issue.description.split('.')[0]}</h4>
+                      <h4 className={cn("font-bold text-lg", !userSettings.darkMode && "text-slate-900")}>
+                      {(issue.description || "").split('.')[0]}
+                      </h4>
                       <p className="text-sm text-slate-500">Reported on {new Date(issue.reported_at).toLocaleDateString()}</p>
                     </div>
                   </div>

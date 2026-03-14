@@ -17,9 +17,13 @@ const DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-function ChangeView({ center, zoom }: { center: [number, number], zoom: number }) {
+function ChangeView({ center, zoom }) {
   const map = useMap();
-  map.setView(center, zoom);
+
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom]);
+
   return null;
 }
 
@@ -106,7 +110,7 @@ export default function CityMap() {
                     </span>
                     <span className="text-[10px] text-slate-500 font-bold">{issue.id}</span>
                   </div>
-                  <h4 className={cn("text-sm font-bold truncate", !userSettings.darkMode && "text-slate-900")}>{issue.description.split('.')[0]}</h4>
+                  <h4 className={cn("text-sm font-bold truncate", !userSettings.darkMode && "text-slate-900")}>{(issue.description || "").split(".")[0]}</h4>
                   <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
                     <MapPin size={10} /> {issue.location_name}
                   </p>
@@ -132,14 +136,17 @@ export default function CityMap() {
               }
             />
             <ChangeView center={mapCenter} zoom={mapZoom} />
-            {filteredIssues.map(issue => (
-              <Marker 
-                key={issue.id} 
-                position={[issue.lat, issue.lng]}
-                eventHandlers={{
-                  click: () => setSelectedIssue(issue),
-                }}
+            {filteredIssues
+              .filter(issue => issue.lat && issue.lng)
+              .map(issue => (
+                <Marker
+                    key={issue.id}
+                    position={[issue.lat, issue.lng]}
+                    eventHandlers={{
+                        click: () => setSelectedIssue(issue),
+                      }}
               >
+              
                 <Popup>
                   <div className="p-2 min-w-[200px]">
                     <h4 className="font-bold text-slate-900">{issue.type}</h4>
